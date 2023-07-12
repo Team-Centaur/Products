@@ -1,0 +1,28 @@
+{
+  "name": "products",
+  "version": "1.0.0",
+  "description": "Product Systems",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Team-Centaur/Products.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Team-Centaur/Products/issues"
+  },
+  "homepage": "https://github.com/Team-Centaur/Products#readme",
+  "dependencies": {
+    "mongoose": "^7.3.4",
+    "pg": "^8.11.1",
+    "pg-promise": "^11.5.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
+  }
+}
