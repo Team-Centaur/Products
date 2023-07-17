@@ -138,13 +138,12 @@ async function createDatabase() {
     await copyData();
 
     //Analyze after load to speed up queries
+    console.log('Analyzing database...')
     await connection.query('ANALYZE')
 
     console.log('Database created successfully!');
   } catch (error) {
     console.error('Error creating table:', error);
-  } finally {
-    await connection.end();
   }
 }
 
