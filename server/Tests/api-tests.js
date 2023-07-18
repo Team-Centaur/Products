@@ -7,7 +7,7 @@ function getRandomProductId(min, max) {
 
 export const options = {
   thresholds: {
-    http_req_duration: ['p(95)<700'], // 95 percent of response times must be below 250ms
+    http_req_duration: ['avg < 300'],
     http_req_failed: ['rate<0.02'],
 },
 
@@ -24,7 +24,7 @@ export const options = {
 
 export default () => {
 
-const productId = getRandomProductId(855065, 950072)
+const productId = getRandomProductId(900000, 1000000);
 
 const getProducts = http.get('http://localhost:3000/products');
   check(getProducts, {

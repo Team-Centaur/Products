@@ -32,13 +32,11 @@ async function createDatabase() {
   try {
     await postgresConnection.connect();
 
-    const dropDatabaseQuery = 'DROP DATABASE IF EXISTS product_data';
-    const createDatabaseQuery = 'CREATE DATABASE product_data';
+    const createDatabaseQuery = 'CREATE DATABASE IF NOT EXISTS product_data';
 
-    await postgresConnection.query(dropDatabaseQuery);
     await postgresConnection.query(createDatabaseQuery);
-
     await postgresConnection.end();
+
     await connection.connect();
 
     const createTableQuery = `
@@ -107,8 +105,8 @@ async function createDatabase() {
 
         const copyQuery = `COPY ${table}(${columns}) FROM '${filePath}' DELIMITER ',' CSV HEADER NULL 'null'`;
         await connection.query(copyQuery);
-
         console.log(`Data copied successfully for table '${table}'`);
+
       } catch (error) {
         console.error(`Error copying data for table '${table}':`, error);
       }
@@ -128,8 +126,8 @@ async function createDatabase() {
         for (const { name, filePath, columns } of tables) {
           await copyTableData(name, filePath, columns);
         }
-
         console.log('Data copied successfully!');
+
       } catch (err) {
         console.error('Error copying data:', err);
       }
@@ -142,9 +140,12 @@ async function createDatabase() {
     await connection.query('ANALYZE')
 
     console.log('Database created successfully!');
+
   } catch (error) {
     console.error('Error creating table:', error);
   }
 }
+
+createDatabase();
 
 module.exports = { connection, createDatabase }

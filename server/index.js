@@ -4,6 +4,7 @@ const db = require('./PrimaryDB.js');
 const routes = require('./routes.js');
 const pg = require('pg');
 const port = 3000;
+const { Client } = require('pg')
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -14,7 +15,15 @@ async function startServer() {
 
 try {
 
-await db.createDatabase();
+  const connection = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'product_data',
+    password: '',
+    port: 5432,
+  });
+
+  await connection.connect();
 
 } catch (err) {
   console.log(err)
