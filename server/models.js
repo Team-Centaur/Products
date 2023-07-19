@@ -1,10 +1,33 @@
-const db = require('./PrimaryDB.js');
+const pg = require('pg');
+const copyFrom = require('pg-copy-streams').from;
+const { Client } = pg;
+const fs = require('fs');
+const path = require('path');
+
+const connection = new Client({
+  user: 'aaronbrandenberger',
+  host: '3.134.77.55',
+  database: 'product_data',
+  password: 'password',
+  port: 5432,
+});
+
+async function connect() {
+  try {
+    await connection.connect();
+    console.log("Connected to the database");
+  } catch (err) {
+    console.error("Failed to connect to the database", err);
+    process.exit(1);
+  }
+}
+connect();
 
 const fetchProducts = async (page, count) => {
   page = page || 1;
   count = count || 5;
   try {
-    const res = await db.connection.query(`
+    const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price FROM products
     LIMIT $2
     OFFSET ($1 - 1) * $2;`, [page, count]);
@@ -28,7 +51,7 @@ const fetchProducts = async (page, count) => {
 
 const fetchProduct = async (id) => {
   try {
-    const res = await db.connection.query(`
+    const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price,
     COALESCE(array_agg(COALESCE(features.feature, '')), ARRAY[]::text[]) AS features,
     COALESCE(array_agg(COALESCE(features.value, '')), ARRAY[]::text[]) AS values
@@ -59,7 +82,7 @@ const fetchProduct = async (id) => {
 
 const fetchProductStyles = async (id) => {
   try {
-    const res = await db.connection.query(`
+    const res = await connection.query(`
     WITH style_sku_query AS (
       SELECT styles.id, name, sale_price, original_price, default_style,
              array_agg(skus.id) AS sku_ids,
@@ -107,7 +130,7 @@ const fetchProductStyles = async (id) => {
 
 const fetchRelated = async (id) => {
   try {
-    const res = await db.connection.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
+    const res = await connection.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
     const data = res.rows.map((row) => row['related_product_id']);
 
     return data;

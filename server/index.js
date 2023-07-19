@@ -1,10 +1,17 @@
 const express = require('express');
 const app = express();
-const db = require('./PrimaryDB.js');
 const routes = require('./routes.js');
 const pg = require('pg');
 const port = 3000;
 const { Client } = require('pg')
+
+const connection = new Client({
+  user: 'aaronbrandenberger',
+  host: '3.134.77.55',
+  database: 'product_data',
+  password: 'password',
+  port: 5432,
+});
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -14,14 +21,6 @@ app.use(routes);
 async function startServer() {
 
 try {
-
-  const connection = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'product_data',
-    password: '',
-    port: 5432,
-  });
 
   await connection.connect();
 
@@ -36,3 +35,5 @@ try {
 }
 
 startServer();
+
+module.exports = { connection }
