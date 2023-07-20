@@ -39,5 +39,9 @@ route.get('/products/:id/related', async (req, res) => {
   }
 });
 
+app.get('/loaderio-d820445249c0702a93c062e45c2e7ac7.txt', function(req, res){
+  res.send('loaderio-d820445249c0702a93c062e45c2e7ac7');
+});
+
 module.exports = route;
 

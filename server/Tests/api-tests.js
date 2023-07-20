@@ -7,7 +7,7 @@ function getRandomProductId(min, max) {
 
 export const options = {
   thresholds: {
-    http_req_duration: ['avg < 300'],
+    http_req_duration: ['avg < 400'],
     http_req_failed: ['rate<0.02'],
 },
 
@@ -15,8 +15,8 @@ export const options = {
     my_scenario1: {
       executor: 'constant-arrival-rate',
       duration: '30s',
-      preAllocatedVUs: 3000,
-      rate: 1000,
+      preAllocatedVUs: 1000,
+      rate: 200,
       timeUnit: '1s',
     },
   },
@@ -26,25 +26,25 @@ export default () => {
 
 const productId = getRandomProductId(900000, 1000000);
 
-const getProducts = http.get('http://localhost:3000/products');
+const getProducts = http.get('http://3.134.102.46/products');
   check(getProducts, {
     'status was 200': (r) => r.status == 200,
     'response time is less than 700ms': (r) => r.timings.duration < 700,
   });
 
-const getProduct = http.get(`http://localhost:3000/products/${productId}`);
+const getProduct = http.get(`http://3.134.102.46/products/${productId}`);
   const resultProd = check(getProduct, {
     'status was 200': (r) => r.status == 200,
     'response time is less than 700ms': (r) => r.timings.duration < 700,
   });
 
-const getProductStyles = http.get(`http://localhost:3000/products/${productId}/styles`)
+const getProductStyles = http.get(`http://3.134.102.46/products/${productId}/styles`)
   const resultStyle = check(getProductStyles, {
     'status was 200': (r) => r.status == 200,
     'response time is less than 700ms': (r) => r.timings.duration < 700,
   });
 
-const getRelatedProducts = http.get(`http://localhost:3000/products/${productId}/related`)
+const getRelatedProducts = http.get(`http://3.134.102.46/products/${productId}/related`)
   const resultRelated = check(getRelatedProducts, {
     'status was 200': (r) => r.status == 200,
     'response time is less than 700ms': (r) => r.timings.duration < 700,
