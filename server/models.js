@@ -167,6 +167,6 @@ const fetchRelated = async (id) => {
 }
 
 
-module.exports = { fetchProduct, fetchProducts, fetchRelated, fetchProductStyles, cacheProduct }
+module.exports = { fetchProduct, fetchProducts, fetchRelated, fetchProductStyles, cacheProducts }
 
 
