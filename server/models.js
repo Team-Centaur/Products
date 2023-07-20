@@ -6,7 +6,7 @@ const path = require('path');
 
 const connection = new Client({
   user: 'aaronbrandenberger',
-  host: '52.15.195.136',
+  host: '3.14.8.86',
   database: 'product_data',
   password: 'password',
   port: 5432,
