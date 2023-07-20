@@ -18,7 +18,7 @@ const connection = new Client({
 
 (async () => {
 for (let i = 0; i < 200003; i += 2) {
-  console.log('Caching');
+  console.log(`Caching Product Page: ${i}`);
   try {
     const response = await query.fetchProducts(i, 5);
     await memeCachedClient.set(`products:${i}`, JSON.stringify(response));
