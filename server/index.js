@@ -17,13 +17,16 @@ const connection = new Client({
 });
 
 (async () => {
-for (let i = 100000; i < 200003; i += 20) {
-  console.log(`Caching Product Page: ${i}`);
+  let lastID = 0;
+  let pageNumber = 1;
+  while (pageNumber <= 203000) {
   try {
-    const response = await query.fetchProducts(i, 5);
-    await memeCachedClient.set(`products:${i}`, JSON.stringify(response));
+    const response = await query.cacheProducts(lastID, 5);
+    await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
+    pageNumber++
+    lastID = response[response.length - 1].id;
   } catch (error) {
-    console.error(`Failed on page ${i}: ${error}`);
+    console.error(`Failed on page ${pageNumber}: ${error}`);
     }
   }
   memeCachedClient.close();

@@ -5,11 +5,14 @@ const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
 
 route.get('/products', async (req, res) => {
+  const page = req.query.page || 1
   const cacheKey = `products:${page}`;
 
   memeCachedClient.get(cacheKey, async (err, value) => {
     if (err) {
       console.error('Error retrieving data from cache:', err);
+      res.status(500).send('Error retrieving data from cache');
+      return;
     }
 
     if (value) {

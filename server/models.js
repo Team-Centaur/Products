@@ -23,6 +23,33 @@ async function connect() {
 }
 connect();
 
+const cacheProducts = async (lastID, count) => {
+  count = count || 5;
+  lastID = lastID || 0;
+  try {
+    const res = await connection.query(`
+    SELECT products.id, name, slogan, description, category, default_price FROM products
+    WHERE id > $1
+    ORDER BY id
+    LIMIT $2;`, [lastID, count]);
+
+    const data = res.rows.map((row) => (
+      {
+        "id": row['id'],
+        "name": row['name'],
+        "slogan": row['slogan'],
+        "description": row['description'],
+        "category": row["category"],
+        "default_price": row["default_price"]
+      }
+    ))
+    return data;
+
+  } catch(err) {
+    throw err;
+  }
+};
+
 const fetchProducts = async (page, count) => {
   page = page || 1;
   count = count || 5;
@@ -140,6 +167,6 @@ const fetchRelated = async (id) => {
 }
 
 
-module.exports = { fetchProduct, fetchProducts, fetchRelated, fetchProductStyles }
+module.exports = { fetchProduct, fetchProducts, fetchRelated, fetchProductStyles, cacheProduct }
 
 
