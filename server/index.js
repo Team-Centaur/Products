@@ -3,7 +3,10 @@ const app = express();
 const routes = require('./routes.js');
 const pg = require('pg');
 const port = 3000;
-const { Client } = require('pg')
+const { Client } = require('pg');
+const query = require('./models.js');
+const memjs = require('memjs');
+const memeCachedClient = memjs.Client.create();
 
 const connection = new Client({
   user: 'aaronbrandenberger',
@@ -12,6 +15,19 @@ const connection = new Client({
   password: 'password',
   port: 5432,
 });
+
+(async () => {
+for (let i = 0; i < 200003; i += 2) {
+  try {
+    const response = await query.fetchProducts(i, 5);
+    await memeCachedClient.set(`products:${i}`, JSON.stringify(response));
+  } catch (error) {
+    console.error(`Failed on page ${i}: ${error}`);
+    }
+  }
+  memeCachedClient.close();
+})();
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
