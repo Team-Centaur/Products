@@ -19,10 +19,14 @@ const connection = new Client({
 (async () => {
   let lastID = 0;
   let pageNumber = 1;
-  while (pageNumber <= 203000) {
+  while (true) {
   try {
     const response = await query.cacheProducts(lastID, 5);
+    if (response.length === 0) {
+      break;
+    }
     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
+    console.log(`Cached Page: ${pageNumber}`)
     pageNumber++
     lastID = response[response.length - 1].id;
   } catch (error) {
