@@ -17,7 +17,7 @@ const connection = new Client({
 });
 
 (async () => {
-for (let i = 0; i < 200003; i += 20) {
+for (let i = 100000; i < 200003; i += 20) {
   console.log(`Caching Product Page: ${i}`);
   try {
     const response = await query.fetchProducts(i, 5);
