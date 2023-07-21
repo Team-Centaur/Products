@@ -26,6 +26,7 @@ const connection = new Client({
       break;
     }
     await memeCachedClient.flush()
+    console.log('Memory Flushed');
     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
     console.log(`Cached Page: ${pageNumber}`)
     pageNumber++
