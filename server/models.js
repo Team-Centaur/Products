@@ -1,7 +1,5 @@
-const pg = require('pg');
-const copyFrom = require('pg-copy-streams').from;
-const client = pg;
-const { pool } = require('./index.js')
+const { Pool } = require('pg');
+const { pool } = require('./index.js');
 const fs = require('fs');
 const path = require('path');
 
