@@ -16,7 +16,6 @@ route.get('/products', async (req, res) => {
     }
 
     if (value) {
-      console.log(value);
       const cachedData = JSON.parse(value.toString());
       res.json(cachedData);
     } else {
