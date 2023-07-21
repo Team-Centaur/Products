@@ -2,9 +2,7 @@ const express = require('express');
 const route = express.Router();
 const model = require('./models.js')
 const memjs = require('memjs');
-const { pool } = require('./index.js')
 const memeCachedClient = memjs.Client.create();
-
 
 route.get('/products', async (req, res) => {
   const page = req.query.page || 1
@@ -25,7 +23,7 @@ route.get('/products', async (req, res) => {
   const products = await model.fetchProducts(req.query.page, req.query.count);
   res.send(products);
   } catch (error) {
-    console.error('Error fetching products:', error)
+    console.log('hello')
     res.status(500).send(error);
   }
 }
@@ -64,4 +62,3 @@ route.get('/loaderio-5cef59c62337cd075c670b850432c9b4.txt', function(req, res){
 });
 
 module.exports = route;
-

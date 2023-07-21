@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const routes = require('./routes.js');
+const pg = require('pg');
 const port = 3000;
-const { Pool } = require('pg');
-const { fetchProducts, fetchProduct, fetchRelated, fetchProductStyles, cacheProducts } = require('./models.js')
+const { Client } = require('pg');
+const query = require('./models.js');
 const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
 
-const pool = new Pool({
+const connection = new Client({
   user: 'aaronbrandenberger',
   host: '3.17.69.225',
   database: 'product_data',
@@ -20,12 +21,12 @@ const pool = new Pool({
   let pageNumber = 1;
   while (true) {
   try {
-    const response = await cacheProducts(pool, lastID, 5);
+    const response = await query.cacheProducts(lastID, 5);
     if (response.length === 0) {
       break;
     }
     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
-    // console.log(`Cached Page: ${pageNumber}`)
+    console.log(`Cached Page: ${pageNumber}`)
     pageNumber++
     lastID = response[response.length - 1].id;
   } catch (error) {
@@ -46,7 +47,7 @@ async function startServer() {
 
 try {
 
-  await pool.connect();
+  await connection.connect();
 
 } catch (err) {
   console.log(err)
@@ -60,4 +61,4 @@ try {
 
 startServer();
 
-module.exports = { pool }
+module.exports = { connection }
