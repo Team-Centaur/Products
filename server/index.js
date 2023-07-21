@@ -3,7 +3,7 @@ const app = express();
 const routes = require('./routes.js');
 const port = 3000;
 const { Pool } = require('pg');
-const query = require('./models.js');
+const { fetchProducts, fetchProduct, fetchRelated, fetchProductStyles, cacheProducts } = require('./models.js')
 const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
 
@@ -20,12 +20,12 @@ const pool = new Pool({
   let pageNumber = 1;
   while (true) {
   try {
-    const response = await query.cacheProducts(pool, lastID, 5);
+    const response = await cacheProducts(pool, lastID, 5);
     if (response.length === 0) {
       break;
     }
     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
-    console.log(`Cached Page: ${pageNumber}`)
+    // console.log(`Cached Page: ${pageNumber}`)
     pageNumber++
     lastID = response[response.length - 1].id;
   } catch (error) {
