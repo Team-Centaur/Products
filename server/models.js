@@ -5,11 +5,11 @@ const { pool } = require('./index.js')
 const fs = require('fs');
 const path = require('path');
 
-const cacheProducts = async (connection, lastID, count) => {
+const cacheProducts = async (pool, lastID, count) => {
   count = count || 5;
   lastID = lastID || 0;
   try {
-    const res = await connection.query(`
+    const res = await pool.query(`
     SELECT products.id, name, slogan, description, category, default_price FROM products
     WHERE id > $1
     ORDER BY id
@@ -32,11 +32,11 @@ const cacheProducts = async (connection, lastID, count) => {
   }
 };
 
-const fetchProducts = async (connection, page, count) => {
+const fetchProducts = async (pool, page, count) => {
   page = page || 1;
   count = count || 5;
   try {
-    const res = await connection.query(`
+    const res = await pool.query(`
     SELECT products.id, name, slogan, description, category, default_price FROM products
     LIMIT $2
     OFFSET ($1 - 1) * $2;`, [page, count]);
@@ -58,9 +58,9 @@ const fetchProducts = async (connection, page, count) => {
   }
 };
 
-const fetchProduct = async (connection, id) => {
+const fetchProduct = async (pool, id) => {
   try {
-    const res = await connection.query(`
+    const res = await pool.query(`
     SELECT products.id, name, slogan, description, category, default_price,
     COALESCE(array_agg(COALESCE(features.feature, '')), ARRAY[]::text[]) AS features,
     COALESCE(array_agg(COALESCE(features.value, '')), ARRAY[]::text[]) AS values
@@ -89,9 +89,9 @@ const fetchProduct = async (connection, id) => {
   }
 };
 
-const fetchProductStyles = async (connection, id) => {
+const fetchProductStyles = async (pool, id) => {
   try {
-    const res = await connection.query(`
+    const res = await pool.query(`
     WITH style_sku_query AS (
       SELECT styles.id, name, sale_price, original_price, default_style,
              array_agg(skus.id) AS sku_ids,
@@ -137,9 +137,9 @@ const fetchProductStyles = async (connection, id) => {
   }
 };
 
-const fetchRelated = async (connection, id) => {
+const fetchRelated = async (pool, id) => {
   try {
-    const res = await connection.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
+    const res = await pool.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
     const data = res.rows.map((row) => row['related_product_id']);
 
     return data;
