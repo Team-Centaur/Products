@@ -21,7 +21,7 @@ route.get('/products', async (req, res) => {
     } else {
   try {
   const products = await model.fetchProducts(page, req.query.count);
-  await console.log(req.query);
+  await console.log(page);
   res.send(products);
   } catch (error) {
     console.log('hello')
