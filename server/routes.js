@@ -3,14 +3,14 @@ const route = express.Router();
 const model = require('./models.js')
 const memjs = require('memjs');
 const { pool } = require('./index.js')
-const memeCached memjs.reate();
+const memeCachedClient = memjs.Client.create();
 
 
 route.get('/products', async (req, res) => {
   const page = req.query.page || 1
   const cacheKey = `products:${page}`;
 
-  memeCachedet(cacheKey, async (err, value) => {
+  memeCachedClient.get(cacheKey, async (err, value) => {
     if (err) {
       console.error('Error retrieving data from cache:', err);
       res.status(500).send('Error retrieving data from cache');
