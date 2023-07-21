@@ -19,14 +19,14 @@ const connection = new Client({
 (async () => {
   let lastID = 0;
   let pageNumber = 1;
+  await memeCachedClient.flush()
+  console.log('Memory Flushed');
   while (true) {
   try {
     const response = await query.cacheProducts(lastID, 5);
     if (response.length === 0) {
       break;
     }
-    await memeCachedClient.flush()
-    console.log('Memory Flushed');
     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
     console.log(`Cached Page: ${pageNumber}`)
     pageNumber++
