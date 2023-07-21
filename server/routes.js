@@ -8,8 +8,8 @@ route.get('/products', async (req, res) => {
   console.log(req.query.page);
   const page = req.query.page || 1
   const cacheKey = `products:${page}`;
-  console.log('cacheKey: ')
-  console.log('page: ')
+  console.log('cacheKey: ', cacheKey)
+  console.log('page: ', page)
 
   memeCachedClient.get(cacheKey, async (err, value) => {
     if (err) {
