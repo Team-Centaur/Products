@@ -5,7 +5,7 @@ const { pool } = require('./index.js')
 const fs = require('fs');
 const path = require('path');
 
-const cacheProducts = async (pool, lastID, count) => {
+const cacheProducts = async (lastID, count) => {
   count = count || 5;
   lastID = lastID || 0;
   try {
@@ -32,7 +32,7 @@ const cacheProducts = async (pool, lastID, count) => {
   }
 };
 
-const fetchProducts = async (pool, page, count) => {
+const fetchProducts = async (page, count) => {
   page = page || 1;
   count = count || 5;
   try {
@@ -58,7 +58,7 @@ const fetchProducts = async (pool, page, count) => {
   }
 };
 
-const fetchProduct = async (pool, id) => {
+const fetchProduct = async (id) => {
   try {
     const res = await pool.query(`
     SELECT products.id, name, slogan, description, category, default_price,
@@ -89,7 +89,7 @@ const fetchProduct = async (pool, id) => {
   }
 };
 
-const fetchProductStyles = async (pool, id) => {
+const fetchProductStyles = async (id) => {
   try {
     const res = await pool.query(`
     WITH style_sku_query AS (
@@ -137,7 +137,7 @@ const fetchProductStyles = async (pool, id) => {
   }
 };
 
-const fetchRelated = async (pool, id) => {
+const fetchRelated = async (id) => {
   try {
     const res = await pool.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
     const data = res.rows.map((row) => row['related_product_id']);
