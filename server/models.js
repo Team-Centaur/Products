@@ -1,12 +1,33 @@
-const { Pool } = require('pg');
+const pg = require('pg');
+const copyFrom = require('pg-copy-streams').from;
+const { Client } = pg;
 const fs = require('fs');
 const path = require('path');
 
-const cacheProducts = async (pool, lastID, count) => {
+const connection = new Client({
+  user: 'aaronbrandenberger',
+  host: '3.17.69.225',
+  database: 'product_data',
+  password: 'password',
+  port: 5432,
+});
+
+async function connect() {
+  try {
+    await connection.connect();
+    console.log("Connected to the database");
+  } catch (err) {
+    console.error("Failed to connect to the database", err);
+    process.exit(1);
+  }
+}
+connect();
+
+const cacheProducts = async (lastID, count) => {
   count = count || 5;
   lastID = lastID || 0;
   try {
-    const res = await pool.query(`
+    const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price FROM products
     WHERE id > $1
     ORDER BY id
@@ -29,11 +50,11 @@ const cacheProducts = async (pool, lastID, count) => {
   }
 };
 
-const fetchProducts = async (pool, page, count) => {
+const fetchProducts = async (page, count) => {
   page = page || 1;
   count = count || 5;
   try {
-    const res = await pool.query(`
+    const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price FROM products
     LIMIT $2
     OFFSET ($1 - 1) * $2;`, [page, count]);
@@ -55,9 +76,9 @@ const fetchProducts = async (pool, page, count) => {
   }
 };
 
-const fetchProduct = async (pool, id) => {
+const fetchProduct = async (id) => {
   try {
-    const res = await pool.query(`
+    const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price,
     COALESCE(array_agg(COALESCE(features.feature, '')), ARRAY[]::text[]) AS features,
     COALESCE(array_agg(COALESCE(features.value, '')), ARRAY[]::text[]) AS values
@@ -86,9 +107,9 @@ const fetchProduct = async (pool, id) => {
   }
 };
 
-const fetchProductStyles = async (pool, id) => {
+const fetchProductStyles = async (id) => {
   try {
-    const res = await pool.query(`
+    const res = await connection.query(`
     WITH style_sku_query AS (
       SELECT styles.id, name, sale_price, original_price, default_style,
              array_agg(skus.id) AS sku_ids,
@@ -134,9 +155,9 @@ const fetchProductStyles = async (pool, id) => {
   }
 };
 
-const fetchRelated = async (pool, id) => {
+const fetchRelated = async (id) => {
   try {
-    const res = await pool.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
+    const res = await connection.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
     const data = res.rows.map((row) => row['related_product_id']);
 
     return data;
@@ -147,5 +168,3 @@ const fetchRelated = async (pool, id) => {
 
 
 module.exports = { fetchProduct, fetchProducts, fetchRelated, fetchProductStyles, cacheProducts }
-
-
