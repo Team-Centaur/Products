@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
 const routes = require('./routes.js');
-const pg = require('pg');
 const port = 3000;
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const query = require('./models.js');
 const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
 
-const connection = new Client({
+const pool = new Pool({
   user: 'aaronbrandenberger',
   host: '3.17.69.225',
   database: 'product_data',
@@ -47,7 +46,7 @@ async function startServer() {
 
 try {
 
-  await connection.connect();
+  await pool.connect();
 
 } catch (err) {
   console.log(err)
@@ -61,4 +60,4 @@ try {
 
 startServer();
 
-module.exports = { connection }
+module.exports = { pool }

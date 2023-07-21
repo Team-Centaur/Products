@@ -1,29 +1,11 @@
 const pg = require('pg');
 const copyFrom = require('pg-copy-streams').from;
-const { Client } = pg;
+const client = pg;
+const { pool } = require('./index.js')
 const fs = require('fs');
 const path = require('path');
 
-const connection = new Client({
-  user: 'aaronbrandenberger',
-  host: '3.17.69.225',
-  database: 'product_data',
-  password: 'password',
-  port: 5432,
-});
-
-async function connect() {
-  try {
-    await connection.connect();
-    console.log("Connected to the database");
-  } catch (err) {
-    console.error("Failed to connect to the database", err);
-    process.exit(1);
-  }
-}
-connect();
-
-const cacheProducts = async (lastID, count) => {
+const cacheProducts = async (connection, lastID, count) => {
   count = count || 5;
   lastID = lastID || 0;
   try {
@@ -50,7 +32,7 @@ const cacheProducts = async (lastID, count) => {
   }
 };
 
-const fetchProducts = async (page, count) => {
+const fetchProducts = async (connection, page, count) => {
   page = page || 1;
   count = count || 5;
   try {
@@ -76,7 +58,7 @@ const fetchProducts = async (page, count) => {
   }
 };
 
-const fetchProduct = async (id) => {
+const fetchProduct = async (connection, id) => {
   try {
     const res = await connection.query(`
     SELECT products.id, name, slogan, description, category, default_price,
@@ -107,7 +89,7 @@ const fetchProduct = async (id) => {
   }
 };
 
-const fetchProductStyles = async (id) => {
+const fetchProductStyles = async (connection, id) => {
   try {
     const res = await connection.query(`
     WITH style_sku_query AS (
@@ -155,7 +137,7 @@ const fetchProductStyles = async (id) => {
   }
 };
 
-const fetchRelated = async (id) => {
+const fetchRelated = async (connection, id) => {
   try {
     const res = await connection.query(`SELECT related_product_id FROM related WHERE current_product_id = $1;`, [id]);
     const data = res.rows.map((row) => row['related_product_id']);
