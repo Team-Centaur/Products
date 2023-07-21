@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const pool  = require('./index.js');
+const { pool }  = require('./index.js');
 const fs = require('fs');
 const path = require('path');
 
