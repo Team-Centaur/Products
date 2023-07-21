@@ -10,6 +10,7 @@ route.get('/products', async (req, res) => {
   const cacheKey = `products:${page}`;
   console.log('cacheKey: ', cacheKey)
   console.log('page: ', page)
+  console.log(typeof page)
 
   memeCachedClient.get(cacheKey, async (err, value) => {
     if (err) {
@@ -25,7 +26,6 @@ route.get('/products', async (req, res) => {
     } else {
   try {
   const products = await model.fetchProducts(req.query.page, req.query.count);
-  console.log(products);
   res.send(products);
   } catch (error) {
     console.log('hello')
