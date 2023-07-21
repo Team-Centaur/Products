@@ -6,7 +6,7 @@ const memeCachedClient = memjs.Client.create();
 
 route.get('/products', async (req, res) => {
   console.log(req.query.page);
-  const page = req.query.page || 1
+  const page = parseInt(req.query.page) || 1
   const cacheKey = `products:${page}`;
   console.log('cacheKey: ', cacheKey)
   console.log('page: ', page)
