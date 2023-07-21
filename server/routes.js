@@ -5,12 +5,8 @@ const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
 
 route.get('/products', async (req, res) => {
-  console.log(req.query.page);
   const page = parseInt(req.query.page) || 1
   const cacheKey = `products:${page}`;
-  console.log('cacheKey: ', cacheKey)
-  console.log('page: ', page)
-  console.log(typeof page)
 
   memeCachedClient.get(cacheKey, async (err, value) => {
     if (err) {
@@ -25,7 +21,7 @@ route.get('/products', async (req, res) => {
       res.json(cachedData);
     } else {
   try {
-  const products = await model.fetchProducts(req.query.page, req.query.count);
+  const products = await model.fetchProducts(page, req.query.count);
   res.send(products);
   } catch (error) {
     console.log('hello')
