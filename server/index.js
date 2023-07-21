@@ -20,7 +20,7 @@ const pool = new Pool({
   let pageNumber = 1;
   while (true) {
   try {
-    const response = await query.cacheProducts(lastID, 5);
+    const response = await query.cacheProducts(pool, lastID, 5);
     if (response.length === 0) {
       break;
     }
