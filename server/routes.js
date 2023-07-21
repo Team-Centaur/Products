@@ -20,8 +20,7 @@ route.get('/products', async (req, res) => {
       res.json(cachedData);
     } else {
   try {
-  const products = await model.fetchProducts(page, req.query.count);
-  await console.log(page);
+  const products = await model.fetchProducts(req.query.page, req.query.count);
   res.send(products);
   } catch (error) {
     console.log('hello')
