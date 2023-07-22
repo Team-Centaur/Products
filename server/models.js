@@ -69,7 +69,6 @@ const fetchProducts = async (page, count) => {
         "default_price": row["default_price"]
       }
     ))
-    console.log('MODEL DATA: ', data);
     return data;
 
   } catch(err) {
