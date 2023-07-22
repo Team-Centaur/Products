@@ -7,6 +7,7 @@ const { Client } = require('pg');
 const query = require('./models.js');
 const memjs = require('memjs');
 const memeCachedClient = memjs.Client.create();
+const compression = require('compression');
 
 const connection = new Client({
   user: 'aaronbrandenberger',
@@ -42,6 +43,7 @@ const connection = new Client({
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(compression());
 
 app.use(routes);
 
