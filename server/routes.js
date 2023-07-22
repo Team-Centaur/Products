@@ -57,8 +57,8 @@ route.get('/products/:id/related', async (req, res) => {
   }
 });
 
-route.get('/loaderio-5cef59c62337cd075c670b850432c9b4.txt', function(req, res){
-  res.send('loaderio-5cef59c62337cd075c670b850432c9b4');
+route.get('/loaderio-fc41793d44df9361b45b7702b459a5d2.txt', function(req, res){
+  res.send('loaderio-fc41793d44df9361b45b7702b459a5d2');
 });
 
 module.exports = route;

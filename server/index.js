@@ -16,28 +16,28 @@ const connection = new Client({
   port: 5432,
 });
 
-(async () => {
-  let lastID = 0;
-  let pageNumber = 1;
-  await memeCachedClient.flush()
-  console.log('Memory Flushed');
-  while (true) {
-  try {
-    const response = await query.cacheProducts(lastID, 5);
-    if (response.length === 0) {
-      break;
-    }
-    await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
-    console.log(`Cached Page: ${pageNumber}`)
-    pageNumber++
-    lastID = response[response.length - 1].id;
-  } catch (error) {
-    console.error(`Failed on page ${pageNumber}: ${error}`);
-    }
-  }
-  memeCachedClient.close();
-  console.log('Caching Complete');
-})();
+// (async () => {
+//   let lastID = 0;
+//   let pageNumber = 1;
+//   await memeCachedClient.flush()
+//   console.log('Memory Flushed');
+//   while (true) {
+//   try {
+//     const response = await query.cacheProducts(lastID, 5);
+//     if (response.length === 0) {
+//       break;
+//     }
+//     await memeCachedClient.set(`products:${pageNumber}`, JSON.stringify(response));
+//     console.log(`Cached Page: ${pageNumber}`)
+//     pageNumber++
+//     lastID = response[response.length - 1].id;
+//   } catch (error) {
+//     console.error(`Failed on page ${pageNumber}: ${error}`);
+//     }
+//   }
+//   memeCachedClient.close();
+//   console.log('Caching Complete');
+// })();
 
 
 app.use(express.json());
